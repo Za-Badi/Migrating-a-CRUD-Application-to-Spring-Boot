@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link rel="stylesheet" th:href="@{resources/css/all.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{resources/css/index.css}">
+</head>
+<body>
+<h1 class="cont text-center text-black text-capitalize pt-5 pb-2 fs-1" style="font-size: large">Users</h1>
+<div class="d-flex justify-content-center ">
+    <a th:href="@{users/add}" class="textMainColor ">Add new user</a>
+</div>
+
+<div class="m-auto px-5 ">
+    <table class=" table-striped shadow table  text-center bg-light m-auto  text-center mt-5">
+        <thead id="thead" class="mainColor">
+        <tr>
+            <th class="text-capitalize">id</th>
+            <th class="text-capitalize">name</th>
+            <th class="text-capitalize">last name</th>
+            <th class="text-capitalize">Email</th>
+            <th class="text-capitalize text-center">Action</th>
+        </tr>
+        </thead>
+        <tr th:each="userList : ${userList}">
+            <td th:text="${userList.id}"></td>
+            <td th:text="${userList.firstName}"></td>
+            <td th:text="${userList.lastName}"></td>
+            <td th:text="${userList.email}"></td>
+            <td>
+                <a  th:href="@{users/edit_user/{id}(id=${userList.id})}" class="btn btn-light px-3 edit" >Edit</a>
+                <a  th:href= "@{/users/delete/{id}(id=${userList.id})}" class="btn btn-danger" >Delete</a></td>
+        </tr>
+    </table>
+</div>
+<script  th:src="@{resources/css/bootstrap.min.css}"></script>
+</body>
+</html>
