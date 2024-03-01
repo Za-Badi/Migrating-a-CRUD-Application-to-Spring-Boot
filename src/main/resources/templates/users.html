@@ -4,38 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
-    <link rel="stylesheet" th:href="@{resources/css/all.min.css}">
+    <link rel="stylesheet" th:src="@{css/all.min.css}"  >
+    <script type="text/javascript" src="webjars/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{resources/css/index.css}">
+    <link rel="stylesheet" th:href="@{static/css/index.css}">
+    <script type="text/javascript" th:src="@{js/main.js}" src="../static/js/main.js"></script>
 </head>
-<body>
-<h1 class="cont text-center text-black text-capitalize pt-5 pb-2 fs-1" style="font-size: large">Users</h1>
-<div class="d-flex justify-content-center ">
-    <a th:href="@{users/add}" class="textMainColor ">Add new user</a>
+<body class="bg-light">
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="d-flex align-items-start ">
+    <div class=" container w-25 nav flex-column nav-pills  py-5" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <button   class="usertab nav-link active"  id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"   >User</button>
+    </div>
+    <div   class="tab-content px-4 w-100" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel"  aria-labelledby="v-pills-profile-tab">
+            <h2 class="cont text-black text-capitalize py-5 pb-2 fs-1">User Information Page</h2>
+            <div class="card">
+                <div class="card-header">About User</div>
+                <div class="card-body">
+                    <div class="m-auto">
+                        <table class=" table-striped shadow table  text-center bg-light m-auto  text-center ">
+                            <thead class="mainColor">
+                            <tr>
+                                <th class="text-capitalize">id</th>
+                                <th class="text-capitalize">name</th>
+                                <th class="text-capitalize">last name</th>
+                                <th class="text-capitalize">Email</th>
+                                <th class="text-capitalize">Role</th>
+                            </tr>
+                            <tr th:each="currentUser : ${currentUser}">
+                                <td th:text="${currentUser.id}"></td>
+                                <td th:text="${currentUser.firstName}"></td>
+                                <td th:text="${currentUser.lastName}"></td>
+                                <td th:text="${currentUser.email}"></td>
+                                <td th:text="${currentUser.getRoleUser()}"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="m-auto px-5 ">
-    <table class=" table-striped shadow table  text-center bg-light m-auto  text-center mt-5">
-        <thead id="thead" class="mainColor">
-        <tr>
-            <th class="text-capitalize">id</th>
-            <th class="text-capitalize">name</th>
-            <th class="text-capitalize">last name</th>
-            <th class="text-capitalize">Email</th>
-            <th class="text-capitalize text-center">Action</th>
-        </tr>
-        </thead>
-        <tr th:each="userList : ${userList}">
-            <td th:text="${userList.id}"></td>
-            <td th:text="${userList.firstName}"></td>
-            <td th:text="${userList.lastName}"></td>
-            <td th:text="${userList.email}"></td>
-            <td>
-                <a  th:href="@{users/edit_user/{id}(id=${userList.id})}" class="btn btn-light px-3 edit" >Edit</a>
-                <a  th:href= "@{/users/delete/{id}(id=${userList.id})}" class="btn btn-danger" >Delete</a></td>
-        </tr>
-    </table>
+<div class="myForm">
+    <!--/*@thymesVar id="editedUser" type="com.crud.mywebapp.model.User"*/-->
+    <form action="/editUser"  method="post" >
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row  container m-auto w-75 justify-content-center">
+                            <div class="col-12 pb-2">
+                                <div class="form-group">
+                                    <label for="editId">User Id<span class="px-5  text-danger">Cannot be changed</span></label>
+                                    <input type="number" id="editId" name="editId" class="form-control" th:readonly="true" >
+                                </div>
+                            </div>
+                            <div class="col-12 pb-2">
+                                <div class="form-group">
+                                    <label for="editName">Name</label>
+                                    <input type="text" id="editName" name="editName"  class="form-control"  >
+                                </div>
+                            </div>
+                            <div class="col-12 pb-2">
+                                <div class="form-group">
+                                    <label for="editLastName">Last Name</label>
+                                    <input type="text"  id="editLastName" name="editLastName" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="editAge">Age</label>
+                                    <input type="number" id="editAge"  name="editAge" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="editEmail">Email</label>
+                                    <input type="text" id="editEmail" name="editEmail"  class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="editPassword">Password</label>
+                                    <input type="password" id="editPassword" name="editPassword" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group text-center ">
+                                    <label >Role</label>
+                                    <div class=" w-100 bg-white d-flex flex-column">
+                                        <input type="radio" class="btn-check" th:value="1" name="roles" id="ADMIN" autocomplete="off" >
+                                        <label class="btn btn-light" for="ADMIN">ADMIN</label>
+
+                                        <input type="radio" class="btn-check" th:value="5" name="roles" id="USER" autocomplete="off">
+                                        <label class="btn btn-light" for="USER">USER</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                            <div class="col">-->
+                            <!--                                <div class=" d-flex justify-content-end">-->
+                            <!--                                    <button data-bs-dismiss="modal" class=" mx-3 mt-4 text-center btn  btn-danger">Back</button>-->
+                            <!--                                    <button class=" px-3 mt-4 text-center primary" type="submit">Save</button>-->
+
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-<script  th:src="@{resources/css/bootstrap.min.css}"></script>
+<script  th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

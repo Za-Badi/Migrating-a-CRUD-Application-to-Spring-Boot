@@ -1,5 +1,5 @@
 package com.crud.mywebapp;
-import com.crud.mywebapp.dao.UserRepository;
+import com.crud.mywebapp.repositories.UserRepository;
 import com.crud.mywebapp.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,9 +33,6 @@ public class UserRepositoryTests {
        Iterable<User> users = repo.findAll();
         Assertions.assertNotEquals((Arrays.asList(users)).size(), 0);
         System.out.println("zahazaha "+  (Arrays.asList(users)).size());
-//        for (User user : users){
-//            System.out.println(user);
-//        }
 
     }
     @Test
