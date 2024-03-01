@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add</title>
+    <link rel="stylesheet" th:href="@{css/all.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{css/index.css}">
+</head>
+<body>
+    <h1 class=" add p-5 mt-5">Add new User Form</h1>
+    <div class="row container m-auto w-75 justify-content-center">
+        <form th:action="@{save}" method="post" th:object="${user}">
+            <div class="col pb-2">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" required minlength="4" maxlength="26" th:field="*{firstName}" id="name" class="form-control">
+                </div>
+            </div>
+            <div class="col pb-2">
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" required minlength="4" maxlength="26" th:field="*{lastName}" id="lastName" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" required minlength="4" maxlength="26" th:field="*{email}" id="email" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+              <div class="d-flex justify-content-end">
+                  <a th:href="@{/users}" class=" mx-3 mt-4 text-center btn  btn-danger">Back</a>
+                  <button class=" px-2 mt-4 text-center btn btn-primary" type="submit">Save</button>
+              </div>
+            </div>
+
+        </form>
+    </div>
+    <script  th:src="@{resources/css/bootstrap.min.css}"></script>
+
+</body>
+</html>
