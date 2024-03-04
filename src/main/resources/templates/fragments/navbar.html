@@ -1,7 +1,8 @@
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container-fluid">
-            <a class="text-light text-decoration-none" href="#" th:text="${currentUser.email} + '  with role  '+${role} "> </a>
+            <a  class="text-light text-decoration-none" href="#"><span id="userEmail" class="px-2"></span>
+            <span id="userRole"></span></a>
             <div th:if="${param.loggedinuser}">
                 <h3>Invalid username and password.</h3>
             </div>

@@ -1,0 +1,48 @@
+:root{
+    /*--main_color: #842029;*/
+    --main_color: grey;
+}
+
+.mainColor{
+    background-color: var(--main_color) !important;
+}
+.edit{
+    background-color: #b6d4fe;
+}
+
+span{
+    font-size: 1rem ;
+}
+label{
+    padding-bottom: 10px;
+    color:var(--main_color)
+}
+
+.btnStyle{
+    background-color: #842029 !important;
+    /*padding: 10px;*/
+    color: white;
+}
+table{
+    width: 70%;
+}
+.save{
+    background-color: green !important;
+    color: white !important;
+    padding:5px 20px ;
+}
+
+.continue{
+    display: flex;
+    flex-direction: row;
+
+}
+.textMainColor{
+    color: var(--main_color);
+}
+h1{
+    color: black;
+    /*background-color: blue;*/
+}
+
+

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +20,14 @@ public class UserService implements UserDetailsService {
 
 
     public List<User> listAll(){
-        List<User> users  = (List<User>) repository.findAll();
-        for(User user : users){
-            System.out.println("zaha zaha 3"+user);
-        }
-
-        return users;
+        return (List<User>) repository.findAll();
     }
     public User findUserByName(String email){
-        User user  = repository.getUserByUserName(email);
-        return user;
+        return repository.getUserByUserName(email);
     }
 
 
     public void save(User user) {
-        System.out.println("zaha inspect user "+ user);
         repository.save(user);
     }
 
@@ -52,7 +44,6 @@ public class UserService implements UserDetailsService {
     }
 
 
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = repository.getUserByUserName(email);
@@ -61,6 +52,4 @@ public class UserService implements UserDetailsService {
         }
         return new MyUserDetails(user);
     }
-
-
 }

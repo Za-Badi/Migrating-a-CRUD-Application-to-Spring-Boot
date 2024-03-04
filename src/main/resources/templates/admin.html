@@ -23,7 +23,7 @@
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">All Users</button>
-                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">New User</button>
+                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" >New User</button>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -34,9 +34,9 @@
                         </div>
                         <div class=" card-body">
                             <div class="m-auto  ">
-                                <table class=" table-striped shadow table  text-center bg-light m-auto  text-center mt-2">
+                                <table  class=" table-striped shadow table  text-center bg-light m-auto  text-center mt-2">
                                     <thead id="thead" class="mainColor">
-                                    <tr>
+                                    <tr class="">
                                         <th class="text-capitalize">id</th>
                                         <th class="text-capitalize">name</th>
                                         <th class="text-capitalize">last name</th>
@@ -46,59 +46,62 @@
                                         <th class="text-capitalize text-center">Action</th>
                                     </tr>
                                     </thead>
-                                    <tr th:each="userList : ${userList}">
-                                        <td th:text="${userList.id}"></td>
-                                        <td th:text="${userList.firstName}"></td>
-                                        <td th:text="${userList.lastName}"></td>
-                                        <td th:text="${userList.age}"></td>
-                                        <td th:text="${userList.email}"></td>
-                                        <td th:text="${userList.getRoleUser()}"></td>
-                                        <td>
-                                            <a  th:href="@{/edit_user/{id}(id=${userList.id})}"  class="btn btn-light px-3 edit btnEdit" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</a>
-                                            <a  th:href= "@{/deleteform/{id}(id=${userList.id})}" class="btn btn-danger btnDelete"  data-bs-toggle="modal" data-bs-target="#deleteModal" >Delete</a></td>
-                                    </tr>
+                                    <tbody id="dataList" >
+
+<!--                                        <td th:text="${userList.id}"></td>-->
+<!--                                        <td th:text="${userList.firstName}"></td>-->
+<!--                                        <td th:text="${userList.lastName}"></td>-->
+<!--                                        <td th:text="${userList.age}"></td>-->
+<!--                                        <td th:text="${userList.email}"></td>-->
+<!--                                        <td th:text="${userList.getRoleUser()}"></td>-->
+<!--                                        <td>-->
+<!--                                            <a  th:href="@{/edit_user/{id}(id=${userList.id})}"  class="btn btn-light px-3 edit btnEdit" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</a>-->
+<!--                                            <a  th:href= "@{/deleteform/{id}(id=${userList.id})}" class="btn btn-danger btnDelete"  data-bs-toggle="modal" data-bs-target="#deleteModal" >Delete</a></td>-->
+
+                                    </tbody>
+
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="tab-pane fade  " id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="">Add new user</h5>
                         </div>
                         <div class="card-body">
                             <div class="row container m-auto w-75 justify-content-center   w-100">
-                                <form th:action="@{save}"  th:object="${newUser}" th:method="POST">
+                                <form  th:object="${newUser}" th:method="POST">
                                     <div class="col pb-2">
                                         <div class="form-group text-center">
                                             <label for="name">First Name</label>
-                                            <input type="text" required minlength="4" maxlength="26" th:field="*{firstName}" id="name" class="form-control">
+                                            <input type="text" required minlength="4" maxlength="26" name="name"  id="name" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col pb-2">
                                         <div class="form-group text-center">
                                             <label for="lastName">Last Name</label>
-                                            <input type="text" required minlength="4" maxlength="26" th:field="*{lastName}" id="lastName" class="form-control">
+                                            <input type="text" required minlength="4" maxlength="26" name="lastName" id="lastName" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col pb-2">
                                         <div class="form-group text-center">
                                             <label for="age">Age</label>
-                                            <input type="number" required minlength="4" maxlength="26" th:field="*{age}" id="age" class="form-control">
+                                            <input type="number" required minlength="4" maxlength="26" name="age" id="age" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group text-center">
                                             <label for="email">Email</label>
-                                            <input type="email" required minlength="4" maxlength="26" th:field="*{email}" id="email" class="form-control">
+                                            <input type="email" required minlength="4" maxlength="26" name="email" id="email" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group text-center">
                                             <label for="password">Password</label>
                                             <input type="password" required minlength="4" maxlength="26"
-                                                   th:field="*{password}" id="password" class="form-control">
+                                                   name="password" id="password" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col">
@@ -116,7 +119,7 @@
                                     <div class="col">
                                         <div class="d-flex justify-content-end">
                                             <!--                                    <a th:href="@{/index}" class=" mx-3 mt-4 text-center btn  btn-danger">Back</a>-->
-                                            <button class=" px-2 mt-4 text-center btn btn-primary" type="submit">Add New User</button>
+                                            <button onclick="saveUser()"  class=" px-2 mt-4 text-center btn btn-primary" type="submit">Add New User</button>
                                         </div>
                                     </div>
 
@@ -138,20 +141,17 @@
                     <div class="m-auto">
                         <table class=" table-striped shadow table  text-center bg-light m-auto  text-center ">
                             <thead class="mainColor">
-                            <tr>
+                              <tr>
                                 <th class="text-capitalize">id</th>
                                 <th class="text-capitalize">name</th>
                                 <th class="text-capitalize">last name</th>
-                                <th class="text-capitalize">Email</th>
+                                <th class="text-capitalize">Age</th>
+                                  <th class="text-capitalize">Email</th>
                                 <th class="text-capitalize">Role</th>
-                            </tr>
-                            <tr th:each="currentUser : ${currentUser}">
-                                <td th:text="${currentUser.id}"></td>
-                                <td th:text="${currentUser.firstName}"></td>
-                                <td th:text="${currentUser.lastName}"></td>
-                                <td th:text="${currentUser.email}"></td>
-                                <td th:text="${currentUser.getRoleUser()}"></td>
-                            </tr>
+                              </tr>
+                            </thead>
+                            <tbody id="currentUserData"></tbody>
+
                         </table>
                     </div>
 
@@ -161,7 +161,7 @@
     </div>
 </div>
 <div class="myForm">
-    <form action="/editUser"  method="post" >
+    <form  method="post" >
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -212,10 +212,10 @@
                                 <div class="form-group text-center ">
                                     <label >Role</label>
                                     <div class=" w-100 bg-white d-flex flex-column">
-                                        <input type="radio" class="btn-check" th:value="1" name="roles" id="ADMIN" autocomplete="off" >
+                                        <input type="radio" class="btn-check" th:value="1" name="editRoles" id="ADMIN" autocomplete="off" >
                                         <label class="btn btn-light" for="ADMIN">ADMIN</label>
 
-                                        <input type="radio" class="btn-check" th:value="5" name="roles" id="USER" autocomplete="off">
+                                        <input type="radio" class="btn-check" th:value="5" name="editRoles" id="USER" autocomplete="off">
                                         <label class="btn btn-light" for="USER">USER</label>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button onclick='saveEditedUser()' type="submit" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -233,7 +233,7 @@
     </form>
 </div>
 <div class="deleteForm">
-    <form action="/delete"  method="post" >
+    <form>
         <!-- Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -295,7 +295,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Delete</button>
+                        <button onclick='deleteUser()' type="submit" class="btn btn-primary">Delete User</button>
                     </div>
                 </div>
             </div>
@@ -303,7 +303,11 @@
     </form>
 </div>
 <script  th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+    listAllUsers();
+    getCurrentUser();
 
+</script>
 
 </body>
 </html>

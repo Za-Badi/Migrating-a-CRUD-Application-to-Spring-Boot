@@ -1,9 +1,6 @@
 package com.crud.mywebapp.model;
-
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -113,9 +110,6 @@ public class User  {
     }
 
     public Set<Roles> getRoles() {
-//      for(Roles role : roles){
-//
-        System.out.println("zaina 2 "+ (roles.toArray()[0]));
         return roles;
 
     }
@@ -125,7 +119,7 @@ public class User  {
         String authorities ;
         for (Roles role : roles) {
             authorities = String.valueOf(new SimpleGrantedAuthority(role.getRole()));
-            auth.add(authorities.toString());
+            auth.add(authorities);
         }
         return auth;
     }

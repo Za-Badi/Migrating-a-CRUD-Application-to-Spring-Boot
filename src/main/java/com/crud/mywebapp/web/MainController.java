@@ -4,23 +4,22 @@ import com.crud.mywebapp.model.User;
 import com.crud.mywebapp.service.RoleService;
 import com.crud.mywebapp.service.UserNotFoundException;
 import com.crud.mywebapp.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -36,15 +35,19 @@ public class MainController {
     @SuppressWarnings("unchecked")
     @RequestMapping("")
     public String showHomePage( Model model) {
-
+        String authorities="";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String authorities = userDetails.getAuthorities().toString();
-        User currentUser = service.findUserByName(authentication.getName());
-        model.addAttribute("role",authorities);
-        List<User> userList= service.listAll();
-        model.addAttribute("userList" ,userList);
-        model.addAttribute("currentUser" ,currentUser);
+        if (authentication.getPrincipal()!=null){
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+             authorities = userDetails.getAuthorities().toString();
+            User currentUser = service.findUserByName(authentication.getName());
+            model.addAttribute("role",authorities);
+            List<User> userList= service.listAll();
+            model.addAttribute("userList" ,userList);
+            model.addAttribute("currentUser" ,currentUser);
+        }
+
+
         model.addAttribute("newUser", new User());
 
         if(authorities.equals("[ADMIN]"))
@@ -53,8 +56,26 @@ public class MainController {
             return "users";
         }
 
+    @GetMapping(value = "/allusers" )
+    @ResponseBody
+    public List<User> listAll(){
+        return service.listAll();
+    }
+    @GetMapping(value = "/currentUser" )
+    @ResponseBody
+    public Map<String, Object> currentUser(){
+        Map<String, Object> user = new HashMap<>();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = service.findUserByName(authentication.getName());
+        user.put("id", currentUser.getId());
+        user.put("name", currentUser.getFirstName());
+        user.put("email", currentUser.getEmail());
+        user.put("lastName", currentUser.getLastName());
+        user.put("age", currentUser.getAge());
+        user.put("role", currentUser.getRoleUser());
+        return user;
+    }
     @GetMapping("/logout")
-
     public String logout(HttpServletRequest request) throws ServletException {
         request.logout();
         return "Redirect:/";
@@ -62,88 +83,62 @@ public class MainController {
 
 
 
-    @GetMapping(value = "/add" )
-    public String addUser(Model model){
-        model.addAttribute("user", new User());
-        return "add";
-    }
-    @PostMapping(value = "/save" )
-    public String saveUser( User user, @RequestParam(name = "roles", required = false) Integer roles){
-        Roles role =roleService.getRoleById(roles);
-        Set<Roles> userRole = new HashSet<>();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRole.add(role);
-        user.setRoles(userRole);
-        service.save(user);
-        return "redirect:/";
-    }
 
 
-    @PostMapping(value = "/editUser" )
-    public String saveUser(@RequestParam(name = "roles") Integer roles,
-                           @RequestParam(name ="editId") Integer editId,
-                           @RequestParam(name ="editName") String editName,
-                           @RequestParam(name ="editLastName") String editLastName,
-                           @RequestParam(name ="editAge") Integer editAge,
-                           @RequestParam(name ="editEmail") String editEmail,
-                           @RequestParam(name ="editPassword") String editPassword
-    ){
-        User editedUser = new User( editName, editLastName, editAge, editEmail, passwordEncoder.encode(editPassword));
-        editedUser.setId(editId);
-        Roles role =roleService.getRoleById(roles);
-        Set<Roles> userRole = new HashSet<>();
-        userRole.add(role);
-        editedUser.setRoles(userRole);
-        service.save(editedUser);
-        return "redirect:/";
-    }
-
-
-    @GetMapping(value = "edit_user/{id}")
+    @PostMapping(value = "/saveuser",  consumes = {"application/json", "application/xml", "text/plain"})
     @ResponseBody
-    public List editUser( @PathVariable(name = "id") Integer id, Model model) {
-        try   {
-            List userInfo=new ArrayList<>();
-            User user = service.getUser(id);
-            System.out.println("zaha hhh "+user.getRoleUser());
-            userInfo.add(user);
-            String role = user.getRoleUser().toString();
-            userInfo.add(role);
-            return userInfo;
-        }
-        catch (UserNotFoundException e){
-            return null;
-        }
+    public ResponseEntity<String> save(@RequestBody String httpEntity) throws IOException {
+       try{
+           ObjectMapper objectMapper = new ObjectMapper();
+           JsonNode user = objectMapper.readTree(httpEntity);
+           User _user = new User( user.get("firstName").asText(),
+                   user.get("lastName").asText(),
+                   user.get("age").asInt(),
+                   user.get("email").asText(), passwordEncoder.encode(user.get("password").asText()));
+           Roles role =roleService.getRoleById(user.get("role").asInt());
+           if((user.has("id"))){
+             _user.setId(user.get("id").asInt());
+           }
+           Set<Roles> userRole = new HashSet<>();
+           userRole.add(role);
+           _user.setRoles(userRole);
+           service.save(_user);
+       } catch (Exception e){
+           System.out.println(e.toString());
+       }
+        return ResponseEntity.ok().body("success");
     }
 
-    @GetMapping(value = "deleteform/{id}")
-    @ResponseBody
-    public List deleteForm(RedirectAttributes redirectMsg , @PathVariable(name = "id") Integer id, Model model) {
 
 
-        try {
-            List userInfo = new ArrayList<>();
-            User user = service.getUser(id);
-            System.out.println("zaha hhh " + user.getRoleUser());
-            userInfo.add(user);
-            String role = user.getRoleUser().toString();
-            userInfo.add(role);
-            return userInfo;
-        } catch (UserNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    @RequestMapping(value = "delete" , method = RequestMethod.POST)
-    public String deleteUser(@RequestParam(name ="dId") Integer id){
-        System.out.print("zaha delete id "+id);
 
+
+
+@PostMapping(value = "/delete", consumes = {"application/json", "application/xml", "text/plain"})
+@ResponseBody
+    public ResponseEntity<String> deleteUser(@RequestBody String httpEntity) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = service.findUserByName(authentication.getName());
-        if(!Objects.equals(id, currentUser.getId())){
-            service.removeUserById(id);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            JsonNode user = objectMapper.readTree(httpEntity);
+            System.out.println(user.asText());
+            if(user.has("id")){
+                Integer id = user.get("id").asInt();
+                if (!Objects.equals(id, currentUser.getId())) {
+                    service.getUser(id);
+                    service.removeUserById(id);
+                    return ResponseEntity.ok().body("za");
+                }
+            }
+
+
+        } catch (JsonProcessingException | UserNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        return "redirect:/";
+        return ResponseEntity.badRequest() .body("failure");
     }
 
 
