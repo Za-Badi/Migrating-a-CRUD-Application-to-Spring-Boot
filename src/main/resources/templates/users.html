@@ -32,13 +32,7 @@
                                 <th class="text-capitalize">Email</th>
                                 <th class="text-capitalize">Role</th>
                             </tr>
-                            <tr th:each="currentUser : ${currentUser}">
-                                <td th:text="${currentUser.id}"></td>
-                                <td th:text="${currentUser.firstName}"></td>
-                                <td th:text="${currentUser.lastName}"></td>
-                                <td th:text="${currentUser.email}"></td>
-                                <td th:text="${currentUser.getRoleUser()}"></td>
-                            </tr>
+                            <tbody id="currentUserData"></tbody>
                         </table>
                     </div>
 
@@ -132,5 +126,9 @@
     </form>
 </div>
 <script  th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+    getCurrentUser();
+
+</script>
 </body>
 </html>
