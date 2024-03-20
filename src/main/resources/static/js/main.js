@@ -63,7 +63,9 @@ function listAllUsers() {
         if (httpRequest.readyState === 4 && httpRequest.status === 200) {
             dataList = JSON.parse(httpRequest.response);
             display();
+            console.log("zahaa "+httpRequest.response);
         }
+
     })
 }
 
@@ -94,11 +96,11 @@ function displayCurrentUser(dataList) {
     let cBox = "";
     cBox = `
              <tr > 
-                <td>${dataList.id}</td>
-                <td >${dataList.name}</td>
-                <td >${dataList.lastName}</td>
-                <td >${dataList.age}</td>
-                <td >${dataList.email}</td>
+                <td>${dataList.user.id}</td>
+                <td >${dataList.user.firstName}</td>
+                <td >${dataList.user.lastName}</td>
+                <td >${dataList.user.age}</td>
+                <td >${dataList.user.email}</td>
                 <td >${dataList.role}</td>
              </tr>
         `;
@@ -124,7 +126,6 @@ function getCurrentUser() {
 
 function saveUser(){
     var  user = JSON.stringify(
-
             {
                 firstName: document.querySelector('input[name="name"]').value,
                 lastName: document.querySelector('input[name="lastName"]').value,
@@ -160,13 +161,13 @@ function editUser(id, name, lastName, age, email, role) {
             }
 }
 
-function saveEditedUser(){
-    if(document.querySelector('input[name="editName"]').value.length>4 &&
-        document.querySelector('input[name="editLastName"]').value.length>4 &&
-        document.querySelector('input[name="editAge"]').value >2 &&
-        document.querySelector('input[name="editPassword"]').value.length >0 &&
-        document.querySelector('input[name="editRoles"]:checked').value >0){
-        var  user = JSON.stringify(
+async function saveEditedUser() {
+    if (document.querySelector('input[name="editName"]').value.length > 4 &&
+        document.querySelector('input[name="editLastName"]').value.length > 4 &&
+        document.querySelector('input[name="editAge"]').value > 2 &&
+        document.querySelector('input[name="editPassword"]').value.length > 0
+        ) {
+        var user = JSON.stringify(
             {
                 id: document.querySelector('input[name="editId"]').value,
                 firstName: document.querySelector('input[name="editName"]').value,
@@ -178,13 +179,13 @@ function saveEditedUser(){
             }
         );
         let httpRequest = new XMLHttpRequest();
+
         httpRequest.open("POST", '/saveuser');
         httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         httpRequest.send(user);
         listAllUsers();
 
-    }
-    else{
+    } else {
         alert("Sorry Model not saved, please enter correct data")
     }
 

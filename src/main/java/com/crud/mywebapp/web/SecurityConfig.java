@@ -7,64 +7,42 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement
-//@EnableMethodSecurity(securedEnabled = false, jsr250Enabled = false, prePostEnabled = true)
 public class SecurityConfig {
     @Autowired
     UserDetailsService userDetailsService;
-//    @Autowired
-//    RememberMeServices rememberMeServices;
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http ) throws Exception {
           http
                   .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                          .requestMatchers(HttpMethod.PUT).permitAll()
-                          .requestMatchers(HttpMethod.DELETE).permitAll()
-                          .requestMatchers(HttpMethod.POST,"/error").permitAll()
-                          .requestMatchers(HttpMethod.DELETE,"/delete").permitAll()
-                          .requestMatchers(HttpMethod.POST,"/delete").permitAll()
-                          .requestMatchers(HttpMethod.POST,"/saveuser").permitAll()
-                          .requestMatchers(HttpMethod.GET,"/saveuser").permitAll()
-                          .requestMatchers(HttpMethod.POST,"/logout").permitAll()
+                          .requestMatchers("/error").permitAll()
+                          .requestMatchers(HttpMethod.DELETE,"/delete").hasAuthority("ADMIN")
+                          .requestMatchers(HttpMethod.POST,"/delete").hasAuthority("ADMIN")
+                          .requestMatchers(HttpMethod.POST,"/saveuser").hasAuthority("ADMIN")
+                          .requestMatchers(HttpMethod.GET,"/saveuser").hasAuthority("ADMIN")
+                          .requestMatchers(HttpMethod.POST,"/logout").authenticated()
                           .requestMatchers(HttpMethod.PUT,"/logout").permitAll()
                           .requestMatchers(HttpMethod.GET,"/logout").permitAll()
-                          .requestMatchers(HttpMethod.DELETE,"/logout").permitAll()
-
-                          .requestMatchers(HttpMethod.POST).permitAll()
-//                        .requestMatchers("/save")
-//                        .hasAnyAuthority( "[ADMIN]")
-
-
-
-                        .anyRequest().permitAll())
-
-//                .logout(form -> form.invalidateHttpSession(true).clearAuthentication(true)
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                .logoutSuccessUrl("/login?logout").permitAll())
-                  .formLogin(form ->
-
-                          Customizer.withDefaults()
-                )
+                          .anyRequest().authenticated())
+                          .formLogin(form ->
+                                  Customizer.withDefaults()
+                          )
                   .cors(cors-> cors.disable())
                   .csrf(csrf-> csrf.disable());
+
         return  http.build();
     }
 
